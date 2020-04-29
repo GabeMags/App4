@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity() {
 
 
         val newBookButton = findViewById<FloatingActionButton>(R.id.newBookButton)
-            newBookButton.setOnClickListener{
+
+        newBookButton.setOnClickListener{
                 val intent = Intent(this, NewBookActivity::class.java)
                 startActivityForResult(intent, REQUEST_CODE)
             }
@@ -64,17 +65,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data!!)
-        // REQUEST_CODE is defined above
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
+    {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE)
+        {
             // Extract name value from result extras
-            val name = data.extras!!.getString("title")
-            val code = data.extras!!.getInt("code", 0)
+            val newPublished = data?.extras?.getString("published", null)
+            val newAuthor = data?.extras?.getString("author", null)
+            val newTitle = data?.extras?.getString("title", null)
+            val newFirstSentence = data?.extras?.getString("first_sentence", null)
+            val code = data?.extras?.getInt("code", 0)
 
             // Toast the name to display temporarily on screen
-            Toast.makeText(this, name, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Your book $newTitle was posted.", Toast.LENGTH_SHORT).show()
         }
-
     }
 }
