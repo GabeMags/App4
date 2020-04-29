@@ -34,4 +34,5 @@ class BookAdapter(private val books: List<Book>) : RecyclerView.Adapter<BookAdap
         holder.published.text = book.published
 
     }
+
 }

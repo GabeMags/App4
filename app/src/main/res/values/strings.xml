@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">App3</string>
+    <string name="published_tag">Published</string>
+    <string name="author_tag">Author</string>
+    <string name="title_tag">Title</string>
+    <string name="first_sentence_tag">First Sentence</string>
+    <string name="submit">Submit</string>
 </resources>
