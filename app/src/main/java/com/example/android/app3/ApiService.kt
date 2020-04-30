@@ -8,9 +8,9 @@ import retrofit2.http.*
 interface ApiService {
 
     @GET("api/v1/resources/books/all/")
-    fun fetchAllBooks(): Call<List<Book>>
+    fun fetchAllBooks(): Call<MutableList<Book>>
 
     @POST("api/v1/resources/books/")
-    fun insertBook(@Body book: LibBook):Call<LibBook>
+    fun insertBook(@Body book: Book):Call<Book>
 
 }

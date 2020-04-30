@@ -8,9 +8,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.book_row.view.*
 
-class BookAdapter(private val books: List<Book>) : RecyclerView.Adapter<BookAdapter.ViewHolder>() {
+class BookAdapter(private val books: MutableList<Book>) :
+    RecyclerView.Adapter<BookAdapter.ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.book_row, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.book_row, parent,
+            false)
         return ViewHolder(view)
     }
 
@@ -21,7 +24,8 @@ class BookAdapter(private val books: List<Book>) : RecyclerView.Adapter<BookAdap
 
         init {
             itemView.setOnClickListener{
-                Toast.makeText(itemView.context, books[0].first_sentence, Toast.LENGTH_LONG).show()
+                Toast.makeText(itemView.context, books[adapterPosition].first_sentence,
+                    Toast.LENGTH_LONG).show()
             }
         }
     }

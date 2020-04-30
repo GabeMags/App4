@@ -19,15 +19,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
 
-    private final val REQUEST_CODE = 200
+    private val requestCode = 200
 
     // Set up Retrofit API
-    val retrofit = Retrofit.Builder()
+    private val retrofit = Retrofit.Builder()
         .baseUrl("http://10.0.2.2:7000/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val api = retrofit.create(ApiService::class.java)
+    private val api = retrofit.create(ApiService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,32 +38,24 @@ class MainActivity : AppCompatActivity() {
 
         newBookButton.setOnClickListener{
                 val intent = Intent(this, NewBookActivity::class.java)
-                startActivityForResult(intent, REQUEST_CODE)
+                startActivityForResult(intent, requestCode)
             }
 
-
-        // Set up Retrofit API
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:7000/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val api = retrofit.create(ApiService::class.java)
-
-        api.fetchAllBooks().enqueue(object : Callback<List<Book>>{
-            override fun onResponse(call: Call<List<Book>>, response: Response<List<Book>>) {
+        api.fetchAllBooks().enqueue(object : Callback<MutableList<Book>>{
+            override fun onResponse(call: Call<MutableList<Book>>, response:
+            Response<MutableList<Book>>) {
                 showData(response.body()!!)
-                d("test","First title: ${response.body()!![0].title}")
+                d("First Enqueue Call","Able to retrieve the first title: " +
+                        response.body()!![0].title)
             }
 
-            override fun onFailure(call: Call<List<Book>>, t: Throwable) {
-                d("test", "Failed: $t")
+            override fun onFailure(call: Call<MutableList<Book>>, t: Throwable) {
+                d("First Enqueue Call", "Failed for the following reason: $t")
             }
         })
     }
 
-    private fun showData(books: List<Book>) {
-
+    private fun showData(books: MutableList<Book>) {
         bookView.apply{
             adapter?.notifyDataSetChanged()
 
@@ -77,20 +69,39 @@ class MainActivity : AppCompatActivity() {
     {
         super.onActivityResult(requestCode, resultCode, data!!)
 
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE)
+        if (resultCode == Activity.RESULT_OK && requestCode == this.requestCode)
         {
             // Extract name value from result extras
             val newPublished = data.extras!!.getString("published", null)
             val newAuthor = data.extras!!.getString("author", null)
             val newTitle = data.extras!!.getString("title", null)
             val newFirstSentence = data.extras!!.getString("first_sentence", null)
-            val code = data.extras!!.getInt("code", 0)
+
+            /* Attempt at using serializable -- Not quite working. */
+            // val library_book = data.extras!!.getSerializable("library_book")
+            val newBook = Book(published = newPublished, author = newAuthor, title = newTitle,
+                first_sentence = newFirstSentence)
+
+            // Enqueueing to update by adding book to mutable list
+            api.fetchAllBooks().enqueue(object : Callback<MutableList<Book>>{
+                override fun onResponse(call: Call<MutableList<Book>>, response:
+                Response<MutableList<Book>>) {
+                    response.body()!!.add(newBook)
+                    showData(response.body()!!)
+                    d("Second Enqueue Call","Able to retrieve most recently added title:"
+                            + " ${response.body()!![response.body()!!.count()-1].title}")
+                }
+
+                override fun onFailure(call: Call<MutableList<Book>>, t: Throwable) {
+                    d("Second Enqueue Call", "Failed for the following reason: $t")
+                }
+            })
 
             // Toast the name to display temporarily on screen
-            Toast.makeText(this, "Your book \"$newTitle\" was posted.", Toast.LENGTH_SHORT).show()
-
-            // ApiService
-
+            Toast.makeText(this, "Your book \"$newTitle\" was posted.",
+                Toast.LENGTH_SHORT).show()
         }
     }
 }
+
+
