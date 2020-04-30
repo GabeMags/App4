@@ -21,7 +21,7 @@ class BookAdapter(private val books: List<Book>) : RecyclerView.Adapter<BookAdap
 
         init {
             itemView.setOnClickListener{
-                Toast.makeText(itemView.context, books[adapterPosition].first_sentence, Toast.LENGTH_LONG).show()
+                Toast.makeText(itemView.context, books[0].first_sentence, Toast.LENGTH_LONG).show()
             }
         }
     }

@@ -7,3 +7,5 @@ class Book(val published: String, val author: String, val title: String, val fir
     val id: Int? = null
 
 }
+
+class LibBook(val published: String, val author: String, val title: String, val first_sentence: String){}

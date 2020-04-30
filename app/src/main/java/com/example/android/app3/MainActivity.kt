@@ -21,6 +21,14 @@ class MainActivity : AppCompatActivity() {
 
     private final val REQUEST_CODE = 200
 
+    // Set up Retrofit API
+    val retrofit = Retrofit.Builder()
+        .baseUrl("http://10.0.2.2:7000/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val api = retrofit.create(ApiService::class.java)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -57,9 +65,9 @@ class MainActivity : AppCompatActivity() {
     private fun showData(books: List<Book>) {
 
         bookView.apply{
-            layoutManager = LinearLayoutManager(applicationContext)
-
             adapter?.notifyDataSetChanged()
+
+            layoutManager = LinearLayoutManager(applicationContext)
 
             adapter = BookAdapter(books)
         }
@@ -67,19 +75,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
-        super.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data!!)
 
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE)
         {
             // Extract name value from result extras
-            val newPublished = data?.extras?.getString("published", null)
-            val newAuthor = data?.extras?.getString("author", null)
-            val newTitle = data?.extras?.getString("title", null)
-            val newFirstSentence = data?.extras?.getString("first_sentence", null)
-            val code = data?.extras?.getInt("code", 0)
+            val newPublished = data.extras!!.getString("published", null)
+            val newAuthor = data.extras!!.getString("author", null)
+            val newTitle = data.extras!!.getString("title", null)
+            val newFirstSentence = data.extras!!.getString("first_sentence", null)
+            val code = data.extras!!.getInt("code", 0)
 
             // Toast the name to display temporarily on screen
-            Toast.makeText(this, "Your book $newTitle was posted.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Your book \"$newTitle\" was posted.", Toast.LENGTH_SHORT).show()
+
+            // ApiService
+
         }
     }
 }
