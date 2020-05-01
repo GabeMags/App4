@@ -63,8 +63,6 @@ class NewBookActivity : AppCompatActivity() {
                // Creating intent to return the data gathered
                val intent = Intent(this, MainActivity::class.java)
 
-               Log.d("what the fuck my man", libraryBook.toString())
-
                // Pass the data gathered back to the main activity as a result
                intent.putExtra("published", published.text.toString())
                intent.putExtra("author", author.text.toString())
