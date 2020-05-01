@@ -1,6 +1,5 @@
 package edu.fullerton.ecs.cpsc411.restexample
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
@@ -67,12 +66,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
     {
-        super.onActivityResult(requestCode, resultCode, data!!)
+        super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK && requestCode == this.requestCode)
+        if (resultCode == RESULT_OK)
         {
             // Extract name value from result extras
-            val newPublished = data.extras!!.getString("published", null)
+            val newPublished = data!!.extras!!.getString("published", null)
             val newAuthor = data.extras!!.getString("author", null)
             val newTitle = data.extras!!.getString("title", null)
             val newFirstSentence = data.extras!!.getString("first_sentence", null)
@@ -81,6 +80,8 @@ class MainActivity : AppCompatActivity() {
             // val library_book = data.extras!!.getSerializable("library_book")
             val newBook = Book(published = newPublished, author = newAuthor, title = newTitle,
                 first_sentence = newFirstSentence)
+
+            api.insertBook(newBook)
 
             // Enqueueing to update by adding book to mutable list
             api.fetchAllBooks().enqueue(object : Callback<MutableList<Book>>{

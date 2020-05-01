@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.JsonObject
 import edu.fullerton.ecs.cpsc411.restexample.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -47,10 +48,22 @@ class NewBookActivity : AppCompatActivity() {
                    title.text.toString(), firstSentence.text.toString())
 
                // You check the due date. It's due today. Better hurry before you incur a late fee.
-               api.insertBook(libraryBook)
+               val call = api.insertBook(libraryBook)
+
+               call.enqueue(object: Callback<JsonObject>{
+                   override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                       Log.d("Failure", "You messed up my man")
+                   }
+
+                   override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                       Log.d("Success", "Hey. Good job.")
+                   }
+               })
 
                // Creating intent to return the data gathered
                val intent = Intent(this, MainActivity::class.java)
+
+               Log.d("what the fuck my man", libraryBook.toString())
 
                // Pass the data gathered back to the main activity as a result
                intent.putExtra("published", published.text.toString())
@@ -66,6 +79,10 @@ class NewBookActivity : AppCompatActivity() {
 
                // Close current activity
                finish()
+           }
+
+           else {
+               setResult(Activity.RESULT_CANCELED)
            }
 
         }
