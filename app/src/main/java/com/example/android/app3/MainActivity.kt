@@ -70,24 +70,16 @@ class MainActivity : AppCompatActivity() {
 
         if (resultCode == RESULT_OK)
         {
-            // Extract name value from result extras
-            val newPublished = data!!.extras!!.getString("published", null)
-            val newAuthor = data.extras!!.getString("author", null)
-            val newTitle = data.extras!!.getString("title", null)
-            val newFirstSentence = data.extras!!.getString("first_sentence", null)
+            // Extract title value from result extras
+            val newTitle = data!!.extras!!.getString("title", null)
 
             /* Attempt at using serializable -- Not quite working. */
             // val library_book = data.extras!!.getSerializable("library_book")
-            val newBook = Book(published = newPublished, author = newAuthor, title = newTitle,
-                first_sentence = newFirstSentence)
-
-            api.insertBook(newBook)
 
             // Enqueueing to update by adding book to mutable list
             api.fetchAllBooks().enqueue(object : Callback<MutableList<Book>>{
                 override fun onResponse(call: Call<MutableList<Book>>, response:
                 Response<MutableList<Book>>) {
-                    response.body()!!.add(newBook)
                     showData(response.body()!!)
                     d("Second Enqueue Call","Able to retrieve most recently added title:"
                             + " ${response.body()!![response.body()!!.count()-1].title}")
